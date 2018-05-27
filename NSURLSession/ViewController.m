@@ -148,10 +148,6 @@
                                                                                 multiplier:1.0
                                                                                   constant:30.0];
     [self.view addConstraints:@[rightConstraintIndicator, centerYConstraintIndicator, widthIndicatorConstraint, heightIndicatorConstraint]];
-    
-    //[self.startButton release];
-    //[self.activityIndicator release];
-    //[self.imageView release];
 }
 
 - (void)startLoading {
@@ -162,28 +158,9 @@
     
     //NSURLSessionDataTask
     
-//    NSURLSessionDataTask *dataTask = [session dataTaskWithURL:url
-//                                            completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-//        if (error == nil) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.activityIndicator stopAnimating];
-//                self.imageView.image = [UIImage imageWithData:data];
-//            });
-//        } else {
-//            NSLog(@"Error: %@", [error localizedDescription]);
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self.activityIndicator stopAnimating];
-//                [self showErrorAlert];
-//            });
-//        }
-//    }];
-//    [dataTask resume];
-    
-    //NSURLSessionDownloadTask
-    
-    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSURLSessionDataTask *dataTask = [session dataTaskWithURL:url
+                                            completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error == nil) {
-            NSData *data = [NSData dataWithContentsOfURL:location];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityIndicator stopAnimating];
                 self.imageView.image = [UIImage imageWithData:data];
@@ -195,8 +172,29 @@
                 [self showErrorAlert];
             });
         }
+        [session invalidateAndCancel];
     }];
-    [downloadTask resume];
+    [dataTask resume];
+    
+    //NSURLSessionDownloadTask
+    
+//    NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithURL:url completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+//        if (error == nil) {
+//            NSData *data = [NSData dataWithContentsOfURL:location];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.activityIndicator stopAnimating];
+//                self.imageView.image = [UIImage imageWithData:data];
+//            });
+//        } else {
+//            NSLog(@"Error: %@", [error localizedDescription]);
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self.activityIndicator stopAnimating];
+//                [self showErrorAlert];
+//            });
+//        }
+//        [session invalidateAndCancel];
+//    }];
+//    [downloadTask resume];
 }
 
 - (void)showErrorAlert {
